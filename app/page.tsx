@@ -11,7 +11,7 @@ type Question = {
 const questions: Question[] = [
   {
     question: "ما عاصمة فرنسا؟",
-    options: ["لندن", "باريس", "مدريد", "روما"],
+    options: ["لندن", "باريس", "مدريد", "ugd "],
     correct: 1,
   },
   {
