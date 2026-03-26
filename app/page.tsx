@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback } from "react";
 
 type Section =
   | "start"
@@ -23,80 +23,188 @@ type Section =
   | "game14"
   | "game15"
   | "game16"
-  | "end"
+  | "end";
 
 // ======= بيانات الأسئلة =======
-const  QUESTIONS: {
-  id: Section
-  next: Section
-  emoji: string
-  question: string
-  correct: string
-  wrong: string
+const QUESTIONS: {
+  id: Section;
+  next: Section;
+  emoji: string;
+  question: string;
+  correct: string;
+  wrong: string;
 }[] = [
-  { id: "game2",  next: "game3",  emoji: "💭", question: "يحبها؟",                       correct: "اي بكلشي ❤️",         wrong: "لا" },
-  { id: "game3",  next: "game4",  emoji: "🌙", question: "تفكر فيها؟",                   correct: "كل وقت ❤️",            wrong: "أحيانا" },
-  { id: "game4",  next: "game5",  emoji: "✨", question: "شهد أهم شي بحياته؟",           correct: "اي والله ❤️",          wrong: "مو متأكد" },
-  { id: "game5",  next: "game6",  emoji: "🔥", question: "تحس بيها وهي بعيدة؟",          correct: "دايمًا ❤️",            wrong: "لا" },
-  { id: "game6",  next: "game7",  emoji: "🌹", question: "ودها تكون معاه دايم؟",         correct: "اي ❤️",               wrong: "شايف" },
-  { id: "game7",  next: "game8",  emoji: "💌", question: "صوتها يريحه؟",                 correct: "أكثر من كلشي ❤️",     wrong: "عادي" },
-  { id: "game8",  next: "game9",  emoji: "🎯", question: "تحمل اسمها بقلبه؟",           correct: "من يوم أول ❤️",        wrong: "يمكن" },
-  { id: "game9",  next: "game10", emoji: "🌟", question: "أجمل لحظة بحياته وين؟",       correct: "وياها ❤️",             wrong: "بمكان ثاني" },
-  { id: "game10", next: "game11", emoji: "💫", question: "يتمنى عيد ميلادها يكون مثالي؟", correct: "من كل قلبه ❤️",      wrong: "عادي" },
-  { id: "game11", next: "game12", emoji: "🎂", question: "تستاهل كل الخير؟",             correct: "وأكثر ❤️",             wrong: "شوي" },
-  { id: "game12", next: "game13", emoji: "🕊️", question: "هي سكينته؟",                  correct: "هي كل سكينتي ❤️",     wrong: "لا أدري" },
-  { id: "game13", next: "game14", emoji: "🌸", question: "يبيها سعيدة؟",                 correct: "هذا كل اللي أبيه ❤️", wrong: "مو مشغول" },
-  { id: "game14", next: "game15", emoji: "💎", question: "هي نادرة؟",                    correct: "مو يلكى مثلها ❤️",    wrong: "عادية" },
-  { id: "game15", next: "game16", emoji: "🌊", question: "يحبها للأبد؟",                 correct: "وبعد الأبد ❤️",        wrong: "إنشاء الله" },
-  { id: "game16", next: "end",    emoji: "🔥", question: "حبه شكد؟",                     correct: "أكثر من كلشي ❤️",     wrong: "عادي" },
-]
+  {
+    id: "game2",
+    next: "game3",
+    emoji: "💭",
+    question: "يحبها؟",
+    correct: "اي بكلشي ❤️",
+    wrong: "لا",
+  },
+  {
+    id: "game3",
+    next: "game4",
+    emoji: "🌙",
+    question: "تفكر فيها؟",
+    correct: "كل وقت ❤️",
+    wrong: "أحيانا",
+  },
+  {
+    id: "game4",
+    next: "game5",
+    emoji: "✨",
+    question: "شهد أهم شي بحياته؟",
+    correct: "اي والله ❤️",
+    wrong: "مو متأكد",
+  },
+  {
+    id: "game5",
+    next: "game6",
+    emoji: "🔥",
+    question: "تحس بيها وهي بعيدة؟",
+    correct: "دايمًا ❤️",
+    wrong: "لا",
+  },
+  {
+    id: "game6",
+    next: "game7",
+    emoji: "🌹",
+    question: "ودها تكون معاه دايم؟",
+    correct: "اي ❤️",
+    wrong: "شايف",
+  },
+  {
+    id: "game7",
+    next: "game8",
+    emoji: "💌",
+    question: "صوتها يريحه؟",
+    correct: "أكثر من كلشي ❤️",
+    wrong: "عادي",
+  },
+  {
+    id: "game8",
+    next: "game9",
+    emoji: "🎯",
+    question: "تحمل اسمها بقلبه؟",
+    correct: "من يوم أول ❤️",
+    wrong: "يمكن",
+  },
+  {
+    id: "game9",
+    next: "game10",
+    emoji: "🌟",
+    question: "أجمل لحظة بحياته وين؟",
+    correct: "وياها ❤️",
+    wrong: "بمكان ثاني",
+  },
+  {
+    id: "game10",
+    next: "game11",
+    emoji: "💫",
+    question: "يتمنى عيد ميلادها يكون مثالي؟",
+    correct: "من كل قلبه ❤️",
+    wrong: "عادي",
+  },
+  {
+    id: "game11",
+    next: "game12",
+    emoji: "🎂",
+    question: "تستاهل كل الخير؟",
+    correct: "وأكثر ❤️",
+    wrong: "شوي",
+  },
+  {
+    id: "game12",
+    next: "game13",
+    emoji: "🕊️",
+    question: "هي سكينته؟",
+    correct: "هي كل سكينتي ❤️",
+    wrong: "لا أدري",
+  },
+  {
+    id: "game13",
+    next: "game14",
+    emoji: "🌸",
+    question: "يبيها سعيدة؟",
+    correct: "هذا كل اللي أبيه ❤️",
+    wrong: "مو مشغول",
+  },
+  {
+    id: "game14",
+    next: "game15",
+    emoji: "💎",
+    question: "هي نادرة؟",
+    correct: "مو يلكى مثلها ❤️",
+    wrong: "عادية",
+  },
+  {
+    id: "game15",
+    next: "game16",
+    emoji: "🌊",
+    question: "يحبها للأبد؟",
+    correct: "وبعد الأبد ❤️",
+    wrong: "إنشاء الله",
+  },
+  {
+    id: "game16",
+    next: "end",
+    emoji: "🔥",
+    question: "حبه شكد؟",
+    correct: "أكثر من كلشي ❤️",
+    wrong: "عادي",
+  },
+];
 
 export default function BirthdayPage() {
-  const [section, setSection] = useState<Section>("start")
-  const [score, setScore] = useState(0)
-  const [time, setTime] = useState("")
-  const [fadeKey, setFadeKey] = useState(0)
-  const [showConfetti, setShowConfetti] = useState(false)
+  const [section, setSection] = useState<Section>("start");
+  const [score, setScore] = useState(0);
+  const [time, setTime] = useState("");
+  const [fadeKey, setFadeKey] = useState(0);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const next = useCallback((id: Section) => {
-    setFadeKey((k) => k + 1)
-    setSection(id)
-  }, [])
+    setFadeKey((k) => k + 1);
+    setSection(id);
+  }, []);
 
-  const correct = useCallback((nextId: Section) => {
-    setScore((prev) => prev + 10)
-    setShowConfetti(true)
-    setTimeout(() => setShowConfetti(false), 1200)
-    next(nextId)
-  }, [next])
+  const correct = useCallback(
+    (nextId: Section) => {
+      setScore((prev) => prev + 10);
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 1200);
+      next(nextId);
+    },
+    [next],
+  );
 
   const win = useCallback(() => {
-    setScore((prev) => prev + 10)
-    next("end")
-  }, [next])
+    setScore((prev) => prev + 10);
+    next("end");
+  }, [next]);
 
   // ⏳ العداد
   useEffect(() => {
-    const startDate = new Date("2025-04-29")
+    const startDate = new Date("2025-04-29");
     const tick = () => {
-      const now = new Date()
-      const diff = now.getTime() - startDate.getTime()
-      const d = Math.floor(diff / (1000 * 60 * 60 * 24))
-      const h = Math.floor((diff / (1000 * 60 * 60)) % 24)
-      const m = Math.floor((diff / (1000 * 60)) % 60)
-      setTime(`${d} يوم و ${h} ساعة و ${m} دقيقة ❤️`)
-    }
-    tick()
-    const interval = setInterval(tick, 1000)
-    return () => clearInterval(interval)
-  }, [])
+      const now = new Date();
+      const diff = now.getTime() - startDate.getTime();
+      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((diff / (1000 * 60)) % 60);
+      setTime(`${d} يوم و ${h} ساعة و ${m} دقيقة ❤️`);
+    };
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   // ❤️ القلوب الطائرة
   useEffect(() => {
-    const emojis = ["❤️", "🩷", "💕", "💖", "💗", "✨"]
+    const emojis = ["❤️", "🩷", "💕", "💖", "💗", "✨"];
     const interval = setInterval(() => {
-      const heart = document.createElement("div")
-      heart.innerText = emojis[Math.floor(Math.random() * emojis.length)]
+      const heart = document.createElement("div");
+      heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
       heart.style.cssText = `
         position: fixed;
         bottom: -40px;
@@ -106,20 +214,20 @@ export default function BirthdayPage() {
         animation: floatUp ${4 + Math.random() * 3}s ease-in forwards;
         z-index: 0;
         opacity: 0.7;
-      `
-      document.body.appendChild(heart)
-      setTimeout(() => heart.remove(), 7000)
-    }, 600)
-    return () => clearInterval(interval)
-  }, [])
+      `;
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 7000);
+    }, 600);
+    return () => clearInterval(interval);
+  }, []);
 
   // ======= مكوّن الزر الصحيح =======
   const GoodButton = ({
     children,
     onClick,
   }: {
-    children: React.ReactNode
-    onClick: () => void
+    children: React.ReactNode;
+    onClick: () => void;
   }) => (
     <button
       onClick={onClick}
@@ -127,28 +235,31 @@ export default function BirthdayPage() {
     >
       <span className="relative z-10">{children}</span>
     </button>
-  )
+  );
 
   // ======= مكوّن الزر الهارب =======
   const WrongButton = ({ children }: { children: React.ReactNode }) => {
-    const [pos, setPos] = useState({ x: 0, y: 0 })
+    const [pos, setPos] = useState({ x: 0, y: 0 });
     const move = () => {
       setPos({
         x: (Math.random() - 0.5) * 200,
         y: (Math.random() - 0.5) * 200,
-      })
-    }
+      });
+    };
     return (
       <button
         onMouseEnter={move}
         onTouchStart={move}
-        style={{ transform: `translate(${pos.x}px, ${pos.y}px)`, transition: "transform 0.3s ease" }}
+        style={{
+          transform: `translate(${pos.x}px, ${pos.y}px)`,
+          transition: "transform 0.3s ease",
+        }}
         className="bg-gray-700/60 border border-gray-600 px-6 py-3 rounded-2xl mt-3 text-gray-400 cursor-not-allowed select-none"
       >
         {children}
       </button>
-    )
-  }
+    );
+  };
 
   // ======= غلاف القسم =======
   const Wrap = ({ children }: { children: React.ReactNode }) => (
@@ -160,15 +271,16 @@ export default function BirthdayPage() {
         {children}
       </div>
     </div>
-  )
+  );
 
   // ======= شريط التقدم =======
-  const totalQuestions = QUESTIONS.length
-  const currentQ = QUESTIONS.findIndex((q) => q.id === section)
-  const progress = currentQ >= 0 ? ((currentQ / totalQuestions) * 100).toFixed(0) : null
+  const totalQuestions = QUESTIONS.length;
+  const currentQ = QUESTIONS.findIndex((q) => q.id === section);
+  const progress =
+    currentQ >= 0 ? ((currentQ / totalQuestions) * 100).toFixed(0) : null;
 
   // ======= عرض السؤال الحالي =======
-  const currentQuestion = QUESTIONS.find((q) => q.id === section)
+  const currentQuestion = QUESTIONS.find((q) => q.id === section);
 
   return (
     <>
@@ -209,11 +321,18 @@ export default function BirthdayPage() {
       <div
         dir="rtl"
         className="min-h-screen relative overflow-hidden text-white"
-        style={{ background: "linear-gradient(135deg, #0a0a0f 0%, #1a0a1a 50%, #0f0a1a 100%)" }}
+        style={{
+          background:
+            "linear-gradient(135deg, #0a0a0f 0%, #1a0a1a 50%, #0f0a1a 100%)",
+        }}
       >
         {/* خلفية نجوم */}
-        <div className="fixed inset-0 z-0 opacity-30"
-          style={{ backgroundImage: "radial-gradient(1px 1px at 20% 30%, white, transparent), radial-gradient(1px 1px at 80% 70%, white, transparent), radial-gradient(1px 1px at 50% 50%, white, transparent), radial-gradient(1px 1px at 10% 80%, white, transparent), radial-gradient(1px 1px at 90% 20%, white, transparent)" }}
+        <div
+          className="fixed inset-0 z-0 opacity-30"
+          style={{
+            backgroundImage:
+              "radial-gradient(1px 1px at 20% 30%, white, transparent), radial-gradient(1px 1px at 80% 70%, white, transparent), radial-gradient(1px 1px at 50% 50%, white, transparent), radial-gradient(1px 1px at 10% 80%, white, transparent), radial-gradient(1px 1px at 90% 20%, white, transparent)",
+          }}
         />
 
         {/* كونفيتي عند الإجابة الصحيحة */}
@@ -267,8 +386,10 @@ export default function BirthdayPage() {
               عيد ميلاد سعيد يا شهد
             </h1>
             <p className="mt-5 leading-9 text-gray-200 text-base">
-              يمكن اني بعيد عليج بهاليوم…<br />
-              بس قلبي يمج بكل لحظة<br />
+              يمكن اني بعيد عليج بهاليوم…
+              <br />
+              بس قلبي يمج بكل لحظة
+              <br />
               وكل عام وانتي أجمل شي بحياتي ❤️
             </p>
             <GoodButton onClick={() => next("story1")}>كملي 🎁</GoodButton>
@@ -281,7 +402,8 @@ export default function BirthdayPage() {
             <div className="text-4xl mb-3">🌙</div>
             <h2 className="text-2xl font-bold text-pink-400">بدايتج</h2>
             <p className="mt-4 leading-9 text-gray-200">
-              بهذا اليوم انولد شخص غيّر حياتي…<br />
+              بهذا اليوم انولد شخص غيّر حياتي…
+              <br />
               انولدتي انتي ❤️
             </p>
             <GoodButton onClick={() => next("story2")}>بعد</GoodButton>
@@ -292,9 +414,12 @@ export default function BirthdayPage() {
         {section === "story2" && (
           <Wrap>
             <div className="text-4xl mb-3">💫</div>
-            <h2 className="text-2xl font-bold text-pink-400">شنو انتي الي ❤️</h2>
+            <h2 className="text-2xl font-bold text-pink-400">
+              شنو انتي الي ❤️
+            </h2>
             <p className="mt-4 leading-9 text-gray-200">
-              انتي مو بس حب…<br />
+              انتي مو بس حب…
+              <br />
               انتي راحتي وكل دنيتي
             </p>
             <GoodButton onClick={() => next("counter")}>كملي</GoodButton>
@@ -309,8 +434,12 @@ export default function BirthdayPage() {
             <div className="mt-5 bg-pink-950/40 border border-pink-800/40 rounded-2xl p-5 animate-pulse-glow">
               <p className="text-xl font-bold text-pink-300">{time}</p>
             </div>
-            <p className="mt-4 text-gray-400 text-sm">وكل ثانية أحبج أكثر من اللي قبلها</p>
-            <GoodButton onClick={() => next("game1")}>نبدأ التحدي 🎮</GoodButton>
+            <p className="mt-4 text-gray-400 text-sm">
+              وكل ثانية أحبج أكثر من اللي قبلها
+            </p>
+            <GoodButton onClick={() => next("game1")}>
+              نبدأ التحدي 🎮
+            </GoodButton>
           </Wrap>
         )}
 
@@ -320,8 +449,12 @@ export default function BirthdayPage() {
             <div className="text-5xl mb-3">🎮</div>
             <h2 className="text-2xl font-bold text-pink-400">التحدي يبدأ!</h2>
             <p className="mt-3 text-gray-300">جاوبي صح واجمعي النقاط ❤️</p>
-            <p className="mt-2 text-gray-500 text-sm">(بس الإجابة الغلط تهرب منج 😏)</p>
-            <div className="mt-4 text-2xl font-black text-pink-400">النقاط: {score}</div>
+            <p className="mt-2 text-gray-500 text-sm">
+              (بس الإجابة الغلط تهرب منج 😏)
+            </p>
+            <div className="mt-4 text-2xl font-black text-pink-400">
+              النقاط: {score}
+            </div>
             <GoodButton onClick={() => next("game2")}>ابدأ 💪</GoodButton>
           </Wrap>
         )}
@@ -357,19 +490,28 @@ export default function BirthdayPage() {
               يا شهد
             </h2>
             <div className="mt-2 bg-pink-950/30 border border-pink-800/30 rounded-2xl p-4">
-              <p className="text-4xl font-black text-pink-400">🏆 {score} نقطة</p>
+              <p className="text-4xl font-black text-pink-400">
+                🏆 {score} نقطة
+              </p>
               <p className="text-gray-400 text-sm mt-1">بس النقاط مو المهم…</p>
             </div>
-            <p className="mt-5 leading-9 text-gray-200 text-base">
-              يا أجمل صدفة بحياتي…<br />
-              يا من تملكين قلبي بكل لحظة<br />
-              انتي مو بس حب — انتي وطن ❤️<br />
-              كل عام وانتي حياتي يا شهد 🌹
+            <p>
+              يا شهد… يا أجمل صدفة بحياتي… في يوم ميلادكِ، لا أهنئكِ فقط… بل
+              أهنئ نفسي لأنكِ وُجدتِ في حياتي كل عامٍ وأنتِ النور الذي يضيء
+              أيامي، والنبض الذي يمنح قلبي الحياة أحبكِ حبًا يتجاوز المسافات،
+              ويكبر مع كل لحظة تمرّ، ويزداد عمقًا كلما فكرتُ بكِ وإن كنتُ اليوم
+              بعيدًا عنكِ، فإني أقف بقلبٍ مليء بكِ، وكأنكِ أمامي الآن أتمنى لكِ
+              في عامكِ الجديد كل الفرح، كل الأمان، وكل الأحلام التي تستحقينها
+              وأتمنى… أن أكون أنا أحد أجمل أقداركِ التي لا تزول أعدكِ… أن أبقى
+              معكِ، وأن أحبكِ أكثر مع كل عام، وأن لا يتغير قلبي مهما تغيّرت
+              الأيام عيد ميلادكِ ليس مجرد يوم… بل هو بداية عمرٍ جديد لي معكِ ❤️
+              كل عامٍ وأنتِ حبيبتي… كل عامٍ وأنتِ حياتي… كل عامٍ وأنا أحبكِ أكثر
+              🎂❤️
             </p>
             <div className="mt-6 text-3xl animate-bounce">❤️ 🎂 ❤️</div>
           </Wrap>
         )}
       </div>
     </>
-  )
+  );
 }
